@@ -18,6 +18,22 @@ acceptedButtonImg = './sample-accepted.png'
 championSelectionImg_flash = './flash-icon.png'
 championSelectionImg_emote = './emote-icon.png'
 playButtonImg = './play-button.png'
+dravenImg = './draven.png'
+lockinImg = './LockInButton.png'
+dravenlockedinImg = './dravenlockedin.png'
+banImg = './ban.png'
+chooseImg = './choose.png'
+
+
+def LockInDraven():
+    while True:
+        pos = imagesearch(dravenImg, 0.8)
+        if not pos[0] == -1:
+            pyautogui.click(pos[0], pos[1])
+            break
+        time.sleep(TIMELAPSE)
+    pos = imagesearch(lockinImg, 0.8)
+    pyautogui.click(pos[0], pos[1])
 
 def checkGameAvailableLoop():
     while True:
@@ -48,6 +64,14 @@ def checkGameCancelled():
     else:
         return False
 
+def YourTurnToPick():
+    choose = imagesearch(chooseImg, 0.8)
+    if not choose[0] == -1:
+        return True
+    else:
+        return False
+
+
 
 def main():
     run = True
@@ -59,17 +83,22 @@ def main():
         while True:                                             # this loop runs after queue pop is found and accept is clicked on
             cancelled = checkGameCancelled()                    # this one is kinda gay, this is the thing i made trent cancel queue for, it just checks that you're back in lobby screen after someone declined
             if cancelled is True:
-                print("Game has been cancelled, waiting...")
+                print("Some retard declined")
                 break                                           # loop breaks and goes back to outer loop to check for queue pop again
             
-            csResult = checkChampionSelection()                 # checks if either the emote or flash icons are on screen (so confirms youre in champ select)
+            csResult = checkChampionSelection()
             if csResult is True:
-                print("Champion selection! Good Luck :D")
-                time.sleep(TIMELAPSE)
-                run = False                                     # outer loop breaks, program ends
+                print("In Champ Select")
+                while True:
+                    if YourTurnToPick() is True:
+                        print("Your turn to pick")
+                        LockInDraven()
+                        print("Draven found and locked in")
+                        run = False
+                        break
+                    time.sleep(TIMELAPSE)
                 break
-
-            time.sleep(TIMELAPSE)
+        time.sleep(TIMELAPSE)
         
 
 if __name__ == '__main__':
