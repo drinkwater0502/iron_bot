@@ -1,5 +1,5 @@
 # iron_bot
-so far the program will accept queue and instalock draven for you lmao
+so far the program will accept queue, ban evelynn, and instalock amumu
 
 requirements: 
 
