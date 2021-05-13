@@ -1,5 +1,5 @@
 # oddloop comments:
-# original source code from https://github.com/matiasperz/lol-auto-accept
+# original queue accept source code from https://github.com/matiasperz/lol-auto-accept
 
 # program so far only accepts queue and exits once inside champ select
 # need to add lines that will find and lock in a champion
@@ -19,15 +19,25 @@ championSelectionImg_flash = './flash-icon.png'
 championSelectionImg_emote = './emote-icon.png'
 playButtonImg = './play-button.png'
 dravenImg = './draven.png'
+amumuImg = './amumu.png'
+eveImg = './eve.png'
 lockinImg = './LockInButton.png'
 dravenlockedinImg = './dravenlockedin.png'
-banImg = './ban.png'
+banImg = './ban1.png'
+banbtnImg = './banbtn.png'
 chooseImg = './choose.png'
 
+def LockedIn():
+    pos = imagesearch(dravenlockedinImg, 0.8)
+    if not pos[0] == -1:
+        return True
+    else:
+        return False
 
-def LockInDraven():
+
+def LockInAmumu():
     while True:
-        pos = imagesearch(dravenImg, 0.8)
+        pos = imagesearch(amumuImg, 0.8)
         if not pos[0] == -1:
             pyautogui.click(pos[0], pos[1])
             break
@@ -71,6 +81,22 @@ def YourTurnToPick():
     else:
         return False
 
+def YourTurnToBan():
+    ban = imagesearch(banImg, 0.8)
+    if not ban[0] == -1:
+        return True
+
+def BanEve():
+    eve = imagesearch(eveImg, 0.8)
+    if not eve[0] == -1:
+        pyautogui.click(eve[0], eve[1])
+        banbtn = imagesearch(banbtnImg, 0.8)
+        if not banbtn[0] == -1:
+            pyautogui.click(banbtn[0], banbtn[1])
+            print("Banned Eve")
+    else:
+        print("Could not find Eve")
+
 
 
 def main():
@@ -89,12 +115,18 @@ def main():
             csResult = checkChampionSelection()
             if csResult is True:
                 print("In Champ Select")
-                while True:
-                    if YourTurnToPick() is True:
+                while True:                                     # once in champ select, will constantly check for either: 1. dodge 2. your turn to pick 3. waiting to pick
+                    if checkGameCancelled() is True:
+                        print("Some retard dodged")
+                        break
+
+                    if YourTurnToBan() is True:
+                        BanEve()
+
+                    if YourTurnToPick() is True and LockedIn() is False:
                         print("Your turn to pick")
-                        LockInDraven()
-                        print("Draven found and locked in")
-                        run = False
+                        LockInAmumu()
+                        print("Amumu found and locked in")
                         break
                     time.sleep(TIMELAPSE)
                 break
