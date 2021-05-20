@@ -1,5 +1,7 @@
 # iron_bot
-so far the program will accept queue, ban evelynn, and instalock amumu
+it will int your ranked games for you 
+that is all
+
 
 requirements: 
 
